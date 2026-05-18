@@ -43,9 +43,7 @@ const TRANSLATIONS = {
     widget_prog_desc: "Barras de progreso para el año, mes y semana en curso. Actualización automática.",
     status_ready: "● Disponible",
     status_soon: "○ Próximamente",
-    btn_copy: "Copiar enlace",
-    btn_soon: "En desarrollo",
-    prev_running: "En marcha...",
+    btn_copy: "Ver widget",
     prev_year: "Año 2025",
     prev_month: "Mes",
     prev_week: "Semana",
@@ -92,8 +90,7 @@ const TRANSLATIONS = {
     widget_prog_desc: "Progress bars for the current year, month and week. Automatic updates.",
     status_ready: "● Available",
     status_soon: "○ Coming soon",
-    btn_copy: "Copy link",
-    btn_soon: "In development",
+    btn_copy: "View widget",
     prev_running: "Running...",
     prev_year: "Year 2025",
     prev_month: "Month",
@@ -141,8 +138,7 @@ const TRANSLATIONS = {
     widget_prog_desc: "Barras de progresso para o ano, mês e semana correntes. Atualização automática.",
     status_ready: "● Disponível",
     status_soon: "○ Em breve",
-    btn_copy: "Copiar link",
-    btn_soon: "Em desenvolvimento",
+    btn_copy: "Ver widget",
     prev_running: "Rodando...",
     prev_year: "Ano 2025",
     prev_month: "Mês",
@@ -192,36 +188,93 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
-// ── COPY LINK ─────────────────────────────────────────────
-const BASE_URL = 'https://github.com/GenesisValdebenito/notion-widgets-hub.git';
+// ── WIDGET URLS ───────────────────────────────────────────
+// Detecta automáticamente la base según dónde esté alojada la galería
+const BASE_URL = (() => {
+  const origin = location.origin;
+  const path   = location.pathname.replace(/\/?$/, '');   // quita trailing slash
+  return `${origin}${path}`;
+})();
 
-// Widget → branch mapping (GitHub Pages deploy from branch)
-const WIDGET_BRANCHES = {
-  'widget/calendar':  `${BASE_URL}/widget-calendar/`,
-  'widget/clock':     `${BASE_URL}/widget-clock/`,
-  'widget/timer':     `${BASE_URL}/widget-timer/`,
-  'widget/stopwatch': `${BASE_URL}/widget-stopwatch/`,
+// Rutas relativas de cada widget dentro del mismo repo
+const WIDGET_PATHS = {
+  'widget/calendar':  'widget/calendar/',
+  'widget/clock':     'widget/clock/',
+  'widget/timer':     'widget/timer/',
+  'widget/stopwatch': 'widget/stopwatch/',
 };
 
-function copyLink(widgetPath) {
-  const url = WIDGET_BRANCHES[widgetPath];
+// ── MODAL PREVIEW ─────────────────────────────────────────
+let modalOpen = false;
+
+function openWidget(widgetKey) {
   const t = TRANSLATIONS[currentLang];
-  if (!url) {
-    showToast(t.toast_pending);
-    return;
+  const relativePath = WIDGET_PATHS[widgetKey];
+  if (!relativePath) { showToast(t.toast_pending); return; }
+
+  const fullUrl = `${BASE_URL}/${relativePath}`;
+
+  // Crea modal
+  const overlay = document.createElement('div');
+  overlay.id = 'widgetModal';
+  overlay.innerHTML = `
+    <div class="modal-backdrop"></div>
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Vista previa del widget</span>
+        <div class="modal-actions">
+          <button class="modal-btn-copy" id="modalCopyBtn">📋 Copiar enlace Notion</button>
+          <a class="modal-btn-open" href="${fullUrl}" target="_blank">↗ Abrir en nueva pestaña</a>
+          <button class="modal-btn-close" id="modalClose">✕</button>
+        </div>
+      </div>
+      <div class="modal-url-bar">
+        <span class="modal-url-text" id="modalUrlText">${fullUrl}</span>
+      </div>
+      <div class="modal-iframe-wrap">
+        <iframe src="${fullUrl}" frameborder="0" allowtransparency="true" id="widgetIframe"></iframe>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('visible'));
+  modalOpen = true;
+
+  // Copiar link desde el modal
+  document.getElementById('modalCopyBtn').addEventListener('click', () => {
+    copyToClipboard(fullUrl);
+  });
+
+  // Cerrar
+  function closeModal() {
+    overlay.classList.remove('visible');
+    setTimeout(() => { overlay.remove(); modalOpen = false; }, 300);
   }
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  overlay.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+  document.addEventListener('keydown', function esc(e) {
+    if (e.key === 'Escape') { closeModal(); document.removeEventListener('keydown', esc); }
+  });
+}
+
+function copyToClipboard(url) {
+  const t = TRANSLATIONS[currentLang];
   navigator.clipboard.writeText(url).then(() => {
-    showToast(`${t.toast_copied}: ${url}`);
+    showToast(`✓ Enlace copiado`);
   }).catch(() => {
-    // fallback
     const ta = document.createElement('textarea');
     ta.value = url;
     document.body.appendChild(ta);
     ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
-    showToast(t.toast_copied);
+    showToast(`✓ Enlace copiado`);
   });
+}
+
+// Alias que usan los botones en el HTML
+function copyLink(widgetKey) {
+  openWidget(widgetKey);
 }
 
 function showToast(msg) {
