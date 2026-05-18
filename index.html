@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notion Widgets Hub</title>
+  <title>Calendario · Notion Widget</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap" rel="stylesheet" />
@@ -11,275 +11,107 @@
 </head>
 <body>
 
-  <!-- BACKGROUND GRID -->
-  <div class="bg-grid" aria-hidden="true"></div>
-  <div class="bg-orb orb-1" aria-hidden="true"></div>
-  <div class="bg-orb orb-2" aria-hidden="true"></div>
+  <!-- PANEL DE CONFIGURACIÓN (se oculta en embed de Notion) -->
+  <aside class="config-panel" id="configPanel">
+    <div class="config-header">
+      <span class="config-title">⚙ Personalizar</span>
+      <button class="config-toggle" id="configToggle" title="Cerrar">✕</button>
+    </div>
 
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="#" class="logo">
-        <span class="logo-icon">◈</span>
-        <span class="logo-text">Notion<em>Widgets</em></span>
-      </a>
-      <div class="nav-links">
-        <a href="#widgets">Widgets</a>
-        <a href="#how">Cómo usar</a>
-        <a href="https://github.com/GenesisValdebenito/notion-widgets-hub.git" target="_blank" class="btn-ghost">GitHub ↗</a>
-      </div>
-      <div class="lang-switch">
-        <button class="lang-btn active" data-lang="es">ES</button>
-        <button class="lang-btn" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="pt">PT</button>
+    <!-- IDIOMA -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_lang">Idioma</label>
+      <div class="pill-group" id="langGroup">
+        <button class="pill active" data-val="es">ES</button>
+        <button class="pill" data-val="en">EN</button>
+        <button class="pill" data-val="pt">PT</button>
       </div>
     </div>
-  </nav>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-inner">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        <span data-i18n="badge">Open Source · GitHub Pages</span>
-      </div>
-      <h1 class="hero-title">
-        <span data-i18n="hero_line1">Widgets interactivos</span><br/>
-        <em data-i18n="hero_line2">para tu Notion</em>
-      </h1>
-      <p class="hero-sub" data-i18n="hero_sub">
-        Calendarios, relojes, cronómetros y más. Personaliza colores, idioma y transparencia. Copia el enlace e insértalo en cualquier página de Notion.
-      </p>
-      <div class="hero-actions">
-        <a href="#widgets" class="btn-primary" data-i18n="cta_explore">Explorar widgets</a>
-        <a href="#how" class="btn-outline" data-i18n="cta_how">Cómo funciona</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat"><span class="stat-num">8+</span><span class="stat-label" data-i18n="stat_widgets">Widgets</span></div>
-        <div class="stat-sep"></div>
-        <div class="stat"><span class="stat-num">3</span><span class="stat-label" data-i18n="stat_langs">Idiomas</span></div>
-        <div class="stat-sep"></div>
-        <div class="stat"><span class="stat-num">∞</span><span class="stat-label" data-i18n="stat_themes">Temas</span></div>
+    <!-- TEMA -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_theme">Tema</label>
+      <div class="pill-group" id="themeGroup">
+        <button class="pill active" data-val="dark" data-i18n="theme_dark">Oscuro</button>
+        <button class="pill" data-val="light" data-i18n="theme_light">Claro</button>
+        <button class="pill" data-val="transparent" data-i18n="theme_trans">Cristal</button>
       </div>
     </div>
-  </header>
 
-  <!-- HOW TO USE -->
-  <section class="how" id="how">
-    <div class="container">
-      <h2 class="section-title" data-i18n="how_title">Cómo insertar en Notion</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-body">
-            <h3 data-i18n="step1_title">Elige un widget</h3>
-            <p data-i18n="step1_desc">Selecciona el widget de la galería. Configura su tema, colores e idioma con los controles integrados.</p>
-          </div>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-body">
-            <h3 data-i18n="step2_title">Copia el enlace</h3>
-            <p data-i18n="step2_desc">Haz clic en <strong>"Copiar enlace"</strong>. Obtienes la URL directa del widget alojado en GitHub Pages.</p>
-          </div>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div class="step-body">
-            <h3 data-i18n="step3_title">Inserta en Notion</h3>
-            <p data-i18n="step3_desc">En Notion, escribe <code>/embed</code>, pega el enlace y listo. El widget aparece interactivo en tu página.</p>
-          </div>
-        </div>
+    <!-- COLOR ACENTO -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_accent">Color acento</label>
+      <div class="color-swatches" id="accentGroup">
+        <button class="swatch active" data-color="#6C63FF" style="background:#6C63FF"></button>
+        <button class="swatch" data-color="#FF6B6B" style="background:#FF6B6B"></button>
+        <button class="swatch" data-color="#4ECDC4" style="background:#4ECDC4"></button>
+        <button class="swatch" data-color="#FFB347" style="background:#FFB347"></button>
+        <button class="swatch" data-color="#34D399" style="background:#34D399"></button>
+        <button class="swatch" data-color="#F472B6" style="background:#F472B6"></button>
+        <button class="swatch custom-swatch">
+          <input type="color" id="customColor" value="#6C63FF" title="Color personalizado" />
+        </button>
       </div>
     </div>
-  </section>
 
-  <!-- WIDGET GALLERY -->
-  <section class="gallery" id="widgets">
-    <div class="container">
-      <div class="gallery-header">
-        <h2 class="section-title" data-i18n="gallery_title">Biblioteca de Widgets</h2>
-        <div class="filter-tabs">
-          <button class="filter-btn active" data-filter="all" data-i18n="filter_all">Todos</button>
-          <button class="filter-btn" data-filter="time" data-i18n="filter_time">Tiempo</button>
-          <button class="filter-btn" data-filter="productivity" data-i18n="filter_prod">Productividad</button>
-          <button class="filter-btn" data-filter="visual" data-i18n="filter_visual">Visual</button>
-        </div>
-      </div>
-
-      <div class="grid" id="widgetGrid">
-
-        <!-- CALENDAR -->
-        <article class="card" data-category="time productivity">
-          <div class="card-preview" style="--card-accent: #6C63FF;">
-            <div class="preview-calendar">
-              <div class="cal-header">
-                <span class="cal-month">Abril 2025</span>
-                <div class="cal-dots"><span></span><span></span><span></span><span></span><span></span></div>
-              </div>
-              <div class="cal-grid">
-                <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
-                <span class="empty"></span><span class="empty"></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
-                <span>13</span><span>14</span><span>15</span><span>16</span><span class="today">17</span><span>18</span><span>19</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag" data-i18n="tag_time">Tiempo</span>
-              <span class="tag" data-i18n="tag_prod">Productividad</span>
-            </div>
-            <h3 data-i18n="widget_cal">Calendario</h3>
-            <p data-i18n="widget_cal_desc">Calendario mensual interactivo con navegación. Fondo transparente o personalizable.</p>
-            <div class="card-footer">
-              <div class="status-badge ready" data-i18n="status_ready">● Disponible</div>
-              <button class="btn-card" onclick="copyLink('widget/calendar')" data-i18n="btn_copy">Copiar enlace</button>
-            </div>
-          </div>
-        </article>
-
-        <!-- CLOCK -->
-        <article class="card" data-category="time">
-          <div class="card-preview" style="--card-accent: #FF6B6B;">
-            <div class="preview-clock">
-              <div class="clock-face">
-                <div class="clock-hand hour" id="demoHour"></div>
-                <div class="clock-hand min" id="demoMin"></div>
-                <div class="clock-center"></div>
-              </div>
-              <div class="clock-digital">12:34:56</div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag" data-i18n="tag_time">Tiempo</span>
-            </div>
-            <h3 data-i18n="widget_clock">Reloj</h3>
-            <p data-i18n="widget_clock_desc">Reloj analógico y digital en tiempo real. Elige entre múltiples estilos y zonas horarias.</p>
-            <div class="card-footer">
-              <div class="status-badge ready" data-i18n="status_ready">● Disponible</div>
-              <button class="btn-card" onclick="copyLink('widget/clock')" data-i18n="btn_copy">Copiar enlace</button>
-            </div>
-          </div>
-        </article>
-
-        <!-- TIMER -->
-        <article class="card" data-category="time productivity">
-          <div class="card-preview" style="--card-accent: #FFB347;">
-            <div class="preview-timer">
-              <div class="timer-display">25:00</div>
-              <div class="timer-label">Pomodoro</div>
-              <div class="timer-btns">
-                <div class="tbtn">▶</div>
-                <div class="tbtn">↺</div>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag" data-i18n="tag_time">Tiempo</span>
-              <span class="tag" data-i18n="tag_prod">Productividad</span>
-            </div>
-            <h3 data-i18n="widget_timer">Temporizador</h3>
-            <p data-i18n="widget_timer_desc">Temporizador con modo Pomodoro. Configura intervalos de trabajo y descanso.</p>
-            <div class="card-footer">
-              <div class="status-badge ready" data-i18n="status_ready">● Disponible</div>
-              <button class="btn-card" onclick="copyLink('widget/timer')" data-i18n="btn_copy">Copiar enlace</button>
-            </div>
-          </div>
-        </article>
-
-        <!-- STOPWATCH -->
-        <article class="card" data-category="time">
-          <div class="card-preview" style="--card-accent: #4ECDC4;">
-            <div class="preview-timer">
-              <div class="timer-display">00:00<span style="font-size:1.2rem">.00</span></div>
-              <div class="timer-label" style="color:#4ECDC4" data-i18n="prev_running">En marcha...</div>
-              <div class="timer-btns">
-                <div class="tbtn">⏸</div>
-                <div class="tbtn">⚑</div>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag" data-i18n="tag_time">Tiempo</span>
-            </div>
-            <h3 data-i18n="widget_stop">Cronómetro</h3>
-            <p data-i18n="widget_stop_desc">Cronómetro con registro de vueltas. Precisión de centésimas de segundo.</p>
-            <div class="card-footer">
-              <div class="status-badge ready" data-i18n="status_ready">● Disponible</div>
-              <button class="btn-card" onclick="copyLink('widget/stopwatch')" data-i18n="btn_copy">Copiar enlace</button>
-            </div>
-          </div>
-        </article>
-
-        <!-- QUOTE -->
-        <article class="card" data-category="visual productivity">
-          <div class="card-preview" style="--card-accent: #A78BFA;">
-            <div class="preview-quote">
-              <div class="quote-mark">"</div>
-              <p class="quote-text">La creatividad es la inteligencia divirtiéndose.</p>
-              <p class="quote-author">— Albert Einstein</p>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag" data-i18n="tag_visual">Visual</span>
-              <span class="tag" data-i18n="tag_prod">Productividad</span>
-            </div>
-            <h3 data-i18n="widget_quote">Frase del Día</h3>
-            <p data-i18n="widget_quote_desc">Frases inspiradoras que cambian cada día. Categorías: motivación, filosofía, ciencia.</p>
-            <div class="card-footer">
-              <div class="status-badge coming" data-i18n="status_soon">○ Próximamente</div>
-              <button class="btn-card disabled" disabled data-i18n="btn_soon">En desarrollo</button>
-            </div>
-          </div>
-        </article>
-
-        <!-- PROGRESS -->
-        <article class="card" data-category="productivity visual">
-          <div class="card-preview" style="--card-accent: #34D399;">
-            <div class="preview-progress">
-              <div class="prog-label"><span data-i18n="prev_year">Año 2025</span><span>67%</span></div>
-              <div class="prog-bar"><div class="prog-fill" style="width:67%;background:#34D399"></div></div>
-              <div class="prog-label"><span data-i18n="prev_month">Mes</span><span>43%</span></div>
-              <div class="prog-bar"><div class="prog-fill" style="width:43%;background:#6C63FF"></div></div>
-              <div class="prog-label"><span data-i18n="prev_week">Semana</span><span>28%</span></div>
-              <div class="prog-bar"><div class="prog-fill" style="width:28%;background:#FF6B6B"></div></div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag" data-i18n="tag_prod">Productividad</span>
-              <span class="tag" data-i18n="tag_visual">Visual</span>
-            </div>
-            <h3 data-i18n="widget_prog">Progreso del Año</h3>
-            <p data-i18n="widget_prog_desc">Barras de progreso para el año, mes y semana en curso. Actualización automática.</p>
-            <div class="card-footer">
-              <div class="status-badge coming" data-i18n="status_soon">○ Próximamente</div>
-              <button class="btn-card disabled" disabled data-i18n="btn_soon">En desarrollo</button>
-            </div>
-          </div>
-        </article>
-
+    <!-- FORMATO SEMANA -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_start">Inicio semana</label>
+      <div class="pill-group" id="startGroup">
+        <button class="pill active" data-val="mon" data-i18n="start_mon">Lunes</button>
+        <button class="pill" data-val="sun" data-i18n="start_sun">Domingo</button>
       </div>
     </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="logo">
-        <span class="logo-icon">◈</span>
-        <span class="logo-text">Notion<em>Widgets</em></span>
+    <!-- MOSTRAR SEMANA DEL AÑO -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_week">N.º de semana</label>
+      <div class="pill-group" id="weekNumGroup">
+        <button class="pill active" data-val="no" data-i18n="weeknum_no">No</button>
+        <button class="pill" data-val="yes" data-i18n="weeknum_yes">Sí</button>
       </div>
-      <p class="footer-copy" data-i18n="footer">Hecho con ♥ · Open Source en GitHub · Los widgets son gratuitos para siempre</p>
     </div>
-  </footer>
+
+    <div class="config-footer">
+      <button class="btn-copy" id="btnCopyLink" data-i18n="btn_copy_link">📋 Copiar enlace Notion</button>
+    </div>
+  </aside>
+
+  <!-- BOTÓN FLOTANTE PARA ABRIR CONFIG -->
+  <button class="fab" id="fabConfig" title="Configurar widget">⚙</button>
+
+  <!-- WIDGET PRINCIPAL -->
+  <main class="widget" id="widget">
+
+    <!-- CABECERA -->
+    <header class="cal-header">
+      <button class="nav-btn" id="prevMonth">‹</button>
+      <div class="cal-title-wrap">
+        <h1 class="cal-month-name" id="monthName">Abril</h1>
+        <span class="cal-year" id="yearName">2025</span>
+      </div>
+      <button class="nav-btn" id="nextMonth">›</button>
+    </header>
+
+    <!-- HOY -->
+    <div class="today-strip" id="todayStrip">
+      <span class="today-dot"></span>
+      <span id="todayLabel">Hoy, jueves 17 de abril de 2025</span>
+    </div>
+
+    <!-- GRID DÍAS -->
+    <div class="cal-grid-wrap">
+      <div class="cal-days-header" id="daysHeader"></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <!-- MINI INFO MES -->
+    <footer class="cal-footer">
+      <span id="footerWeeks"></span>
+      <span id="footerDaysLeft"></span>
+    </footer>
+
+  </main>
 
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
