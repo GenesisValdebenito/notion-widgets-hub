@@ -1,0 +1,479 @@
+/* ===========================
+   NOTION WIDGET — Calendario
+   styles.css  (rama: widget/calendar)
+   =========================== */
+
+/* ── VARIABLES / TEMAS ──────────────────────────────── */
+:root {
+  --accent: #6C63FF;
+  --accent-soft: rgba(108,99,255,0.15);
+  --accent-glow: rgba(108,99,255,0.35);
+  --radius: 16px;
+  --radius-sm: 8px;
+  --radius-xs: 4px;
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'Sora', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+  --cell-size: 40px;
+}
+
+/* TEMA OSCURO (por defecto) */
+body.theme-dark {
+  --bg: #0D0D14;
+  --bg2: #14141F;
+  --surface: #1A1A28;
+  --surface2: #222234;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #EEEDF8;
+  --text2: #9896B4;
+  --text3: #4E4C6A;
+  --today-bg: var(--accent);
+  --today-text: #fff;
+}
+
+/* TEMA CLARO */
+body.theme-light {
+  --bg: #F5F4FC;
+  --bg2: #ECEAF8;
+  --surface: #FFFFFF;
+  --surface2: #F0EFF9;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1A1830;
+  --text2: #6B6890;
+  --text3: #B0AEC8;
+  --today-bg: var(--accent);
+  --today-text: #fff;
+}
+
+/* TEMA CRISTAL / TRANSPARENTE */
+body.theme-transparent {
+  --bg: transparent;
+  --bg2: rgba(255,255,255,0.04);
+  --surface: rgba(255,255,255,0.06);
+  --surface2: rgba(255,255,255,0.09);
+  --border: rgba(255,255,255,0.1);
+  --border2: rgba(255,255,255,0.18);
+  --text: #FFFFFF;
+  --text2: rgba(255,255,255,0.6);
+  --text3: rgba(255,255,255,0.3);
+  --today-bg: var(--accent);
+  --today-text: #fff;
+}
+
+/* ── RESET ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; min-height: 100vh; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.5rem 1rem 1rem;
+  transition: background 0.3s;
+  position: relative;
+}
+
+/* ── WIDGET PRINCIPAL ───────────────────────────────── */
+.widget {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.5rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── CABECERA ───────────────────────────────────────── */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-title-wrap {
+  text-align: center;
+}
+
+.cal-month-name {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.cal-year {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+}
+
+.nav-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+  line-height: 1;
+}
+.nav-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* ── HOY STRIP ──────────────────────────────────────── */
+.today-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(108,99,255,0.2);
+}
+
+.today-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* ── GRID ───────────────────────────────────────────── */
+.cal-grid-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cal-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+/* Si se muestran números de semana, 8 cols */
+.show-weeknum .cal-days-header,
+.show-weeknum .cal-grid {
+  grid-template-columns: 28px repeat(7, 1fr);
+}
+
+.day-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text3);
+  text-align: center;
+  padding: 4px 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.day-label.weekend { color: var(--accent); opacity: 0.6; }
+
+.week-num-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text3);
+  text-align: center;
+  padding: 4px 0;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  border-radius: var(--radius-xs);
+  cursor: default;
+  transition: background var(--transition), color var(--transition);
+  position: relative;
+  color: var(--text2);
+  font-weight: 300;
+}
+
+.cal-cell.cur-month {
+  color: var(--text);
+}
+
+.cal-cell.other-month {
+  color: var(--text3);
+  opacity: 0.4;
+}
+
+.cal-cell.weekend.cur-month {
+  color: var(--accent);
+  opacity: 0.75;
+}
+
+.cal-cell.today {
+  background: var(--today-bg);
+  color: var(--today-text) !important;
+  font-weight: 600;
+  border-radius: 50%;
+  box-shadow: 0 4px 14px var(--accent-glow);
+  opacity: 1 !important;
+}
+
+.cal-cell:not(.empty):hover:not(.today) {
+  background: var(--surface2);
+  border-radius: 50%;
+}
+
+.cal-cell.week-num {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text3);
+  aspect-ratio: auto;
+  padding: 2px 0;
+  cursor: default;
+}
+
+/* ── FOOTER DEL CALENDARIO ──────────────────────────── */
+.cal-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text3);
+  letter-spacing: 0.03em;
+}
+
+/* ── PANEL DE CONFIGURACIÓN ─────────────────────────── */
+.config-panel {
+  position: fixed;
+  top: 0; right: 0;
+  width: 240px;
+  height: 100%;
+  background: var(--bg2, #14141F);
+  border-left: 1px solid var(--border2, rgba(255,255,255,0.13));
+  padding: 1.2rem 1.2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  z-index: 200;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.config-panel.open { transform: translateX(0); }
+
+.config-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.config-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text2, #9896B4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.config-toggle {
+  background: none;
+  border: none;
+  color: var(--text3, #4E4C6A);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color var(--transition);
+}
+.config-toggle:hover { color: var(--text, #EEEDF8); }
+
+.config-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.config-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text3, #4E4C6A);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pill-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--border2, rgba(255,255,255,0.13));
+  background: none;
+  color: var(--text2, #9896B4);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.pill:not(.active):hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* SWATCHES */
+.color-swatches {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.swatch {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition);
+  position: relative;
+  flex-shrink: 0;
+}
+.swatch:hover { transform: scale(1.15); }
+.swatch.active { border-color: #fff; box-shadow: 0 0 0 2px var(--accent); }
+.custom-swatch {
+  background: conic-gradient(red, yellow, green, cyan, blue, magenta, red);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.custom-swatch input[type="color"] {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  cursor: pointer;
+  border: none;
+}
+
+/* BOTÓN COPIAR */
+.btn-copy {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent, #6C63FF);
+  background: none;
+  color: var(--accent, #6C63FF);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.btn-copy:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.config-footer { margin-top: auto; }
+
+/* ── FAB ────────────────────────────────────────────── */
+.fab {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--surface, #1A1A28);
+  border: 1px solid var(--border2, rgba(255,255,255,0.13));
+  color: var(--text2, #9896B4);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  transition: all var(--transition);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.fab:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ── TOAST ──────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--surface2, #222234);
+  border: 1px solid var(--border2, rgba(255,255,255,0.13));
+  color: var(--text, #EEEDF8);
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  z-index: 999;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── NOTION EMBED: ocultar config ───────────────────── */
+@media (max-width: 420px) {
+  .fab { display: none; }
+  .config-panel { display: none; }
+  body { padding: 0.5rem; }
+  .widget { max-width: 100%; border-radius: var(--radius-sm); }
+}
+
+/* ── ANIMACIÓN ENTRADA ──────────────────────────────── */
+.widget {
+  animation: fadeUp 0.4s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cal-cell {
+  animation: cellIn 0.3s ease both;
+}

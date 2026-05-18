@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario · Notion Widget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- PANEL DE CONFIGURACIÓN (se oculta en embed de Notion) -->
+  <aside class="config-panel" id="configPanel">
+    <div class="config-header">
+      <span class="config-title">⚙ Personalizar</span>
+      <button class="config-toggle" id="configToggle" title="Cerrar">✕</button>
+    </div>
+
+    <!-- IDIOMA -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_lang">Idioma</label>
+      <div class="pill-group" id="langGroup">
+        <button class="pill active" data-val="es">ES</button>
+        <button class="pill" data-val="en">EN</button>
+        <button class="pill" data-val="pt">PT</button>
+      </div>
+    </div>
+
+    <!-- TEMA -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_theme">Tema</label>
+      <div class="pill-group" id="themeGroup">
+        <button class="pill active" data-val="dark" data-i18n="theme_dark">Oscuro</button>
+        <button class="pill" data-val="light" data-i18n="theme_light">Claro</button>
+        <button class="pill" data-val="transparent" data-i18n="theme_trans">Cristal</button>
+      </div>
+    </div>
+
+    <!-- COLOR ACENTO -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_accent">Color acento</label>
+      <div class="color-swatches" id="accentGroup">
+        <button class="swatch active" data-color="#6C63FF" style="background:#6C63FF"></button>
+        <button class="swatch" data-color="#FF6B6B" style="background:#FF6B6B"></button>
+        <button class="swatch" data-color="#4ECDC4" style="background:#4ECDC4"></button>
+        <button class="swatch" data-color="#FFB347" style="background:#FFB347"></button>
+        <button class="swatch" data-color="#34D399" style="background:#34D399"></button>
+        <button class="swatch" data-color="#F472B6" style="background:#F472B6"></button>
+        <button class="swatch custom-swatch">
+          <input type="color" id="customColor" value="#6C63FF" title="Color personalizado" />
+        </button>
+      </div>
+    </div>
+
+    <!-- FORMATO SEMANA -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_start">Inicio semana</label>
+      <div class="pill-group" id="startGroup">
+        <button class="pill active" data-val="mon" data-i18n="start_mon">Lunes</button>
+        <button class="pill" data-val="sun" data-i18n="start_sun">Domingo</button>
+      </div>
+    </div>
+
+    <!-- MOSTRAR SEMANA DEL AÑO -->
+    <div class="config-group">
+      <label class="config-label" data-i18n="cfg_week">N.º de semana</label>
+      <div class="pill-group" id="weekNumGroup">
+        <button class="pill active" data-val="no" data-i18n="weeknum_no">No</button>
+        <button class="pill" data-val="yes" data-i18n="weeknum_yes">Sí</button>
+      </div>
+    </div>
+
+    <div class="config-footer">
+      <button class="btn-copy" id="btnCopyLink" data-i18n="btn_copy_link">📋 Copiar enlace Notion</button>
+    </div>
+  </aside>
+
+  <!-- BOTÓN FLOTANTE PARA ABRIR CONFIG -->
+  <button class="fab" id="fabConfig" title="Configurar widget">⚙</button>
+
+  <!-- WIDGET PRINCIPAL -->
+  <main class="widget" id="widget">
+
+    <!-- CABECERA -->
+    <header class="cal-header">
+      <button class="nav-btn" id="prevMonth">‹</button>
+      <div class="cal-title-wrap">
+        <h1 class="cal-month-name" id="monthName">Abril</h1>
+        <span class="cal-year" id="yearName">2025</span>
+      </div>
+      <button class="nav-btn" id="nextMonth">›</button>
+    </header>
+
+    <!-- HOY -->
+    <div class="today-strip" id="todayStrip">
+      <span class="today-dot"></span>
+      <span id="todayLabel">Hoy, jueves 17 de abril de 2025</span>
+    </div>
+
+    <!-- GRID DÍAS -->
+    <div class="cal-grid-wrap">
+      <div class="cal-days-header" id="daysHeader"></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <!-- MINI INFO MES -->
+    <footer class="cal-footer">
+      <span id="footerWeeks"></span>
+      <span id="footerDaysLeft"></span>
+    </footer>
+
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
